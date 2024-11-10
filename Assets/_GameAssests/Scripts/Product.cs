@@ -1,18 +1,14 @@
 using System;
 
+/// <summary>
+/// Product data matching JSON
+/// </summary>
 [Serializable]
 public class Product
 {
-    private string _name { get; set; }
-    private string _description { get; set; }
-    private float _price { get; set; }
+    public string name;
+    public string description;
+    public float price;
 
-    public Product(string name, string description, float price)
-    {
-        _name = name;
-        _description = description;
-        _price = price;
-    }
-
-    public override string ToString() { return $"{_name}, {_price}, {_description}"; }
+    public override string ToString() { return $"{name}, {price}, {description}"; }
 }

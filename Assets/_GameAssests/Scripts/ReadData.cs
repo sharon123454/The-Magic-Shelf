@@ -1,31 +1,37 @@
+using UnityEngine.Networking;
 using System.Collections;
 using UnityEngine;
+using System;
 
+/// <summary>
+/// Recieves JSON data from URL
+/// </summary>
 public class ReadData : MonoBehaviour
 {
-    public bool isActive = false;
-    private string url = "https://homework.mocart.io/api/products";
+    /// <summary>
+    /// Invoked when coroutine returned string from URL
+    /// </summary>
+    public event Action<string> OnDataRecievedFromURL;
 
-    private void Update()
+    private string uRL = "https://homework.mocart.io/api/products";
+
+    /// <summary>
+    /// Activates web request coroutine
+    /// </summary>
+    public void TryGetData()
     {
-        if (isActive)
-        {
-            ReadDat();
-            isActive = false;
-        }
+        StartCoroutine(GetURLData());
     }
 
-    public void ReadDat()
+    private IEnumerator GetURLData()
     {
-        StartCoroutine(ReadURL());
-    }
-
-    IEnumerator ReadURL()
-    {
-        using (WWW www = new WWW(url))
+        using (UnityWebRequest request = UnityWebRequest.Get(uRL))
         {
-            yield return www;
-            Debug.Log(www.text);
+            yield return request.SendWebRequest();//Waiting web reply
+
+            if (request.isHttpError || request.isNetworkError) { Debug.LogError(request.error); }//Error catch
+            else
+                OnDataRecievedFromURL?.Invoke(request.downloadHandler.text);//Notify of successfully obtaining web data + passing it on
         }
     }
 
