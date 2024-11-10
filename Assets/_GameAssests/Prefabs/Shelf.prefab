@@ -49,11 +49,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   productPositions:
-  - {fileID: 2639492304828062289}
-  - {fileID: 720481175937841265}
   - {fileID: 4539240396562866281}
-  CurrentProducts:
-    products: []
+  - {fileID: 720481175937841265}
+  - {fileID: 2639492304828062289}
 --- !u!1 &1120368222250743366
 GameObject:
   m_ObjectHideFlags: 0
