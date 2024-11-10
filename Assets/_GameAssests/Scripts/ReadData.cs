@@ -11,7 +11,7 @@ public class ReadData : MonoBehaviour
     /// <summary>
     /// Invoked when coroutine returned string from URL
     /// </summary>
-    public event Action<string> OnDataRecievedFromURL;
+    public static event Action<string> OnDataRecievedFromURL;
 
     private string uRL = "https://homework.mocart.io/api/products";
 
