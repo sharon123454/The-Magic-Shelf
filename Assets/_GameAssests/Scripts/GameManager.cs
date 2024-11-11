@@ -5,8 +5,6 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private Shelf magicShelf;
-
     private void OnEnable()
     {
         ReadData.OnDataRecievedFromURL += ReadData_OnDataRecievedFromURL;
@@ -19,14 +17,13 @@ public class GameManager : MonoBehaviour
         int productsCount = recievedProductList.products.Length;
         if (productsCount <= 0) { Debug.LogError("No products recieved"); return; }
 
-        magicShelf.ClearShelfProducts();//Clearing shelf
+        Shelf.Instance.ClearShelfProducts();//Clearing shelf
 
         for (int i = 0; i < productsCount; i++)
         {
             Product product = recievedProductList.products[i];
-            magicShelf.AddProductToShelf(product);//Adding new products to shelf
+            Shelf.Instance.AddProductToShelf(product);//Adding new products to shelf
         }
-        print(recievedProductList.ToString());
     }
 
     //Modify the name and price of displayed products

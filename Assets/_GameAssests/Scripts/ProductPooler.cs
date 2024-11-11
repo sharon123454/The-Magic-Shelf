@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ProductPooler : MonoBehaviour
 {
-    [SerializeField] private GameObject productPrefab;
+    [SerializeField] private ProductUI productPrefab;
     [SerializeField] private int poolSize = 10;
 
     private static Queue<GameObject> productPool = new Queue<GameObject>();
@@ -14,7 +14,7 @@ public class ProductPooler : MonoBehaviour
         ProductPoolTransform = transform;
         for (int i = 0; i < poolSize; i++)
         {
-            GameObject productGO = Instantiate(productPrefab, transform);
+            GameObject productGO = Instantiate(productPrefab.gameObject, transform);
             productPool.Enqueue(productGO);
         }
     }
@@ -26,7 +26,7 @@ public class ProductPooler : MonoBehaviour
     public static void ReturnProductToPool(GameObject productGO)
     {
         productGO.transform.parent = ProductPoolTransform;
-        productGO.transform.position = Vector3.zero;
+        productGO.transform.localPosition = Vector3.zero;
         productPool.Enqueue(productGO);
     }
 
