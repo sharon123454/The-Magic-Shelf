@@ -13,8 +13,7 @@ public class Shelf : MonoBehaviour
     /// </summary>
     [SerializeField] internal Transform[] productPositions;
 
-    private ProductList currentProductsData = new ProductList();
-    private Queue<GameObject> currentProductVisualsQueue = new Queue<GameObject>();
+    private List<ProductData> activeProductList = new List<ProductData>();
 
     private void Awake()
     {
@@ -26,30 +25,36 @@ public class Shelf : MonoBehaviour
         Instance = this;
     }
 
+    public List<ProductData> GetActiveProductData() { return activeProductList; }
+
     public void AddProductToShelf(Product product)
     {
         if (product == null) { Debug.LogError("product is null"); return; }//Null catch
 
-        currentProductsData.AddProductToArray(product);//Caching current product data
+        GameObject productGO = ProductPooler.GetProduct();//Pooling a prefab product GO
 
-        GameObject productGO = ProductPooler.GetProduct();//Drawing a product GO prefab
-        
         ProductUI productUI = productGO.GetComponent<ProductUI>();//Updating product UI
         productUI.UpdateProductUI(product);
 
-        productGO.transform.parent = productPositions[currentProductVisualsQueue.Count];//Positioning product GO prefab + caching
+        productGO.transform.parent = productPositions[activeProductList.Count];//Positioning product GO prefab + caching
         productGO.transform.localPosition = Vector3.zero;
-        currentProductVisualsQueue.Enqueue(productGO);
+
+        ProductData newData = new ProductData(activeProductList.Count, productGO, productUI, product);//Creating data struct for eaier handling
+        activeProductList.Add(newData);
     }
     public void ClearShelfProducts()
     {
-        currentProductsData.ClearArray();//Clearing cached product data
-
-        while (currentProductVisualsQueue.Count > 0)//Clearing cached Game Objects and returning to pool
+        List<ProductData> toRemoveList = new List<ProductData>();//Clearing cached Game Objects and returning to pool
+        foreach (ProductData product in activeProductList)
         {
-            GameObject productGO = currentProductVisualsQueue.Dequeue();
-            ProductPooler.ReturnProductToPool(productGO);
+            toRemoveList.Add(product);
         }
+        foreach (ProductData product in toRemoveList)
+        {
+            ProductPooler.ReturnProductToPool(product._gameObject);
+            activeProductList.Remove(product);
+        }
+        toRemoveList.Clear();
     }
 
 }
