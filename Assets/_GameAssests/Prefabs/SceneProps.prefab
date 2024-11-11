@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6202820583948182085}
-  - component: {fileID: 3138465821467278217}
+  - component: {fileID: 6412925486784319131}
   m_Layer: 0
   m_Name: ProductPool
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3735757772195960518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3138465821467278217
+--- !u!114 &6412925486784319131
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,9 +41,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 21961852697491213}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 056ed68fc2b728348af68f59d4ce477a, type: 3}
+  m_Script: {fileID: 11500000, guid: 14dd9480b949e7d4a9bc678a39a26315, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  productInterfacePrefab: {fileID: 3620687977691730366, guid: 8a0653c3652beef43b960744739ab7f3, type: 3}
   productPrefab: {fileID: 7686329748855420512, guid: 7346365ec6368534ebd14aa9bef71ba1, type: 3}
   poolSize: 10
 --- !u!1 &2545917637027038845

@@ -13,6 +13,11 @@ public class ProductUI : MonoBehaviour
         t_Price.text = $"${productData.price}";
         t_Description.text = productData.description;
     }
+    public void SetNameAndPrice(string name, string price)
+    {
+        t_Name.text = name;
+        t_Price.text = price;
+    }
 
     public override string ToString()
     {

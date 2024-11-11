@@ -2,36 +2,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Manages product visuals (Singleton)
+/// Manages product visuals
 /// </summary>
 public class Shelf : MonoBehaviour
 {
-    public static Shelf Instance;
-
     /// <summary>
     /// World Positions for products on the shelf
     /// </summary>
     [SerializeField] internal Transform[] productPositions;
 
-    private List<ProductData> activeProductList = new List<ProductData>();
+    private static List<ProductData> activeProductList = new List<ProductData>();
 
-    private void Awake()
+    private void OnEnable()
     {
-        if (Instance != null && Instance != this)//If instance isn't null and isn't this object, Destroy yourself
-        {
-            Debug.Log($"{name} was destroyed.");
-            Destroy(gameObject);
-        }
-        Instance = this;
+        GameManager.OnDataParsed += GameManager_OnDataParsed;
     }
 
-    public List<ProductData> GetActiveProductData() { return activeProductList; }
+    public static List<ProductData> GetCurrentActiveProducts() { return activeProductList; }
 
-    public void AddProductToShelf(Product product)
+    private void AddProductToShelf(Product product)
     {
         if (product == null) { Debug.LogError("product is null"); return; }//Null catch
 
-        GameObject productGO = ProductPooler.GetProduct();//Pooling a prefab product GO
+        GameObject productGO = ObjectPooler.GetProduct();//Pooling a prefab product GO
 
         ProductUI productUI = productGO.GetComponent<ProductUI>();//Updating product UI
         productUI.UpdateProductUI(product);
@@ -42,7 +35,7 @@ public class Shelf : MonoBehaviour
         ProductData newData = new ProductData(activeProductList.Count, productGO, productUI, product);//Creating data struct for eaier handling
         activeProductList.Add(newData);
     }
-    public void ClearShelfProducts()
+    private void ClearShelfProducts()
     {
         List<ProductData> toRemoveList = new List<ProductData>();//Clearing cached Game Objects and returning to pool
         foreach (ProductData product in activeProductList)
@@ -51,10 +44,21 @@ public class Shelf : MonoBehaviour
         }
         foreach (ProductData product in toRemoveList)
         {
-            ProductPooler.ReturnProductToPool(product._gameObject);
+            ObjectPooler.ReturnProductToPool(product._gameObject);
             activeProductList.Remove(product);
         }
         toRemoveList.Clear();
+    }
+
+    private void GameManager_OnDataParsed(ProductList newProductList)
+    {
+        ClearShelfProducts();
+
+        for (int i = 0; i < newProductList.products.Length; i++)
+        {
+            Product product = newProductList.products[i];
+            AddProductToShelf(product);
+        }
     }
 
 }

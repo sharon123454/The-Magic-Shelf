@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -7,9 +8,11 @@ using UnityEngine;
 [RequireComponent(typeof(ReadData))]
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private ShelfInterface shelfInterface;
     [SerializeField] private Button tryRefreashDataButton;
     [SerializeField] private Button exitButton;
 
+    private WaitForSeconds waitforXsec = new WaitForSeconds(2f);
     private ReadData readData;
 
     private void Awake() { readData = GetComponent<ReadData>(); }
@@ -17,12 +20,13 @@ public class UIManager : MonoBehaviour
     {
         tryRefreashDataButton.onClick.AddListener(TryRefreashData);//Links button click to getting data from URL
         exitButton.onClick.AddListener(OnQuitClicked);
+        GameManager.OnDataParsed += GameManager_OnDataParsed;
     }
 
     /// <summary>
-    /// Close / Exit game
+    /// Close / Exit game func
     /// </summary>
-    public void OnQuitClicked()
+    private void OnQuitClicked()
     {
 #if UNITY_STANDALONE
         Application.Quit();
@@ -31,7 +35,20 @@ public class UIManager : MonoBehaviour
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
-
     private void TryRefreashData() { readData.TryGetData(); }
 
+    private void GameManager_OnDataParsed(ProductList newProductList)//---------------------->UI connection
+    {
+        //shelfInterface.ClearInterface();
+        //StartCoroutine(DelayedGetCurrentShelfProducts());
+    }
+    
+    private IEnumerator DelayedGetCurrentShelfProducts()
+    {
+        yield return waitforXsec;
+        shelfInterface.AddProductsToInterface(Shelf.GetCurrentActiveProducts());
+    }
+
+    //Modify the name and price of displayed products
+    //Submit change and send display information update -> to UIManager
 }
