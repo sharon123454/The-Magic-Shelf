@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using System;
 
@@ -39,7 +40,7 @@ public class Shelf : MonoBehaviour
         productGO.transform.parent = productPositions[activeProductList.Count];//Positioning product GO prefab + caching
         productGO.transform.localPosition = Vector3.zero;
 
-        ProductData newData = new ProductData(activeProductList.Count, productGO, productUI, product);//Creating data struct for eaier handling
+        ProductData newData = new ProductData(productGO, productUI, product);//Creating data struct for eaier handling
         activeProductList.Add(newData);
     }
     private void ClearShelfProducts()

@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
-using TMPro;
 
 /// <summary>
 /// Responsible for User input and game interaction
@@ -13,12 +13,13 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Button tryRefreashDataButton;
     [SerializeField] private Button exitButton;
-    [SerializeField] private Button okayButton;
     [SerializeField] private Button cancelButton;
     [SerializeField] private Button confirmButton;
     [SerializeField] private GameObject confirmationScreen;
 
     private WaitForSeconds waitforXsec = new WaitForSeconds(1f);
+    private int currentEditingProductIndex;
+    private Product productInEditing;
     private ReadData readData;
 
     private void Awake() { readData = GetComponent<ReadData>(); }
@@ -28,8 +29,8 @@ public class UIManager : MonoBehaviour
         confirmButton.onClick.AddListener(OnConfirmClicked);
         cancelButton.onClick.AddListener(OnCancelClicked);
         exitButton.onClick.AddListener(OnQuitClicked);
-        okayButton.onClick.AddListener(OnOkayClicked);
         ProductInterface.OnAnyProductButtonPressed += ProductInterface_OnAnyProductButtonPressed;
+        ProductEditScreen.OnAnyProductEdited += ProductEditScreen_OnAnyProductEdited;
         Shelf.OnShelfUpdated += Shelf_OnShelfUpdated;
     }
     private void OnDisable()
@@ -38,8 +39,8 @@ public class UIManager : MonoBehaviour
         confirmButton.onClick.RemoveListener(OnConfirmClicked);
         cancelButton.onClick.RemoveListener(OnCancelClicked);
         exitButton.onClick.RemoveListener(OnQuitClicked);
-        okayButton.onClick.RemoveListener(OnOkayClicked);
         ProductInterface.OnAnyProductButtonPressed -= ProductInterface_OnAnyProductButtonPressed;
+        ProductEditScreen.OnAnyProductEdited -= ProductEditScreen_OnAnyProductEdited;
         Shelf.OnShelfUpdated -= Shelf_OnShelfUpdated;
     }
 
@@ -62,14 +63,6 @@ public class UIManager : MonoBehaviour
 #endif
     }
     /// <summary>
-    /// Change from editing screen to confirmation
-    /// </summary>
-    private void OnOkayClicked()
-    {
-        confirmationScreen.SetActive(true);
-        editScreen.gameObject.SetActive(false);
-    }
-    /// <summary>
     /// Exit confirmation screen, keep OLD data
     /// </summary>
     private void OnCancelClicked()
@@ -81,21 +74,27 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void OnConfirmClicked()
     {
-        //editScreen.GetData();
-        //Update DATA to shelf and UI
-        //Shelf.GetCurrentActiveProducts();
-        //ShelfInterface.GetProductInterfaceList();
+        List<ProductData> currentProductData = Shelf.GetCurrentActiveProducts();
+        List<ProductInterface> currentProductInterface = ShelfInterface.GetProductInterfaceList();
+        currentProductInterface[currentEditingProductIndex].UpdateProductInterface(productInEditing);
+        currentProductData[currentEditingProductIndex]._productUI.UpdateProductUI(productInEditing);
 
         confirmationScreen.SetActive(false);
     }
     #endregion
 
-    private void ProductInterface_OnAnyProductButtonPressed(string productNameAndPrice)
+    private void ProductInterface_OnAnyProductButtonPressed(Product pressedProduct, int productIndex)
     {
         if (!editScreen) { return; }
 
+        currentEditingProductIndex = productIndex;
         editScreen.gameObject.SetActive(true);
-        editScreen.Setup(productNameAndPrice);
+        editScreen.Setup(pressedProduct);
+    }
+    private void ProductEditScreen_OnAnyProductEdited(Product editedProduct)
+    {
+        productInEditing = editedProduct;
+        confirmationScreen.SetActive(true);
     }
     private void Shelf_OnShelfUpdated(ProductList newProductList)
     {

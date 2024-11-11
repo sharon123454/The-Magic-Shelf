@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using System;
@@ -6,7 +7,7 @@ using TMPro;
 [RequireComponent(typeof(Button))]
 public class ProductInterface : MonoBehaviour
 {
-    public static Action<string> OnAnyProductButtonPressed;
+    public static Action<Product, int> OnAnyProductButtonPressed;
 
     [SerializeField] private TextMeshProUGUI t_ProductName;
     [SerializeField] private TextMeshProUGUI t_ProductPrice;
@@ -41,7 +42,23 @@ public class ProductInterface : MonoBehaviour
 
     private void InterfaceButtonClicked()
     {
-        OnAnyProductButtonPressed?.Invoke($"{t_ProductName.text}, {t_ProductPrice.text}");
+        string price = string.Empty;//Removing the $ at the start of the price
+        for (int i = 1; i < t_ProductPrice.text.Length; i++)
+        {
+            price += t_ProductPrice.text[i];
+        }
+
+        Product myProductData = new Product(t_ProductName.text, float.Parse(price), t_ProductDescription.text);
+
+        int myCount = 0;
+        List<ProductInterface> currentProductList = ShelfInterface.GetProductInterfaceList();
+        for (int i = 0; i < currentProductList.Count; i++)
+        {
+            if (currentProductList[i] == this) { break; }
+            myCount++;
+        }
+
+        OnAnyProductButtonPressed?.Invoke(myProductData, myCount);
     }
 
 }

@@ -262,7 +262,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26a458400400aad4caebe7b3b6ed5b21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  okayButton: {fileID: 1504175570931468350}
   currentEditedProductData: {fileID: 3174992049019408869}
+  nameField: {fileID: 4245491898967946142}
+  priceField: {fileID: 2055293996183627102}
 --- !u!222 &7303143227905970347
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1853,7 +1856,6 @@ MonoBehaviour:
   editScreen: {fileID: 3062640194852141374}
   tryRefreashDataButton: {fileID: 2483134316772464120}
   exitButton: {fileID: 3529609134386051544}
-  okayButton: {fileID: 1504175570931468350}
   cancelButton: {fileID: 1784556198685516468}
   confirmButton: {fileID: 8377656245698635795}
   confirmationScreen: {fileID: 5447232125449779402}
