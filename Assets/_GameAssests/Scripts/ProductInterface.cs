@@ -1,11 +1,31 @@
+using UnityEngine.UI;
 using UnityEngine;
+using System;
 using TMPro;
 
+[RequireComponent(typeof(Button))]
 public class ProductInterface : MonoBehaviour
 {
+    public static Action<string> OnAnyProductButtonPressed;
+
     [SerializeField] private TextMeshProUGUI t_ProductName;
     [SerializeField] private TextMeshProUGUI t_ProductPrice;
     [SerializeField] private TextMeshProUGUI t_ProductDescription;
+
+    private Button productInterfaceButton;
+
+    private void Awake()
+    {
+        productInterfaceButton = GetComponent<Button>();
+    }
+    private void OnEnable()
+    {
+        productInterfaceButton.onClick.AddListener(InterfaceButtonClicked);
+    }
+    private void OnDisable()
+    {
+        productInterfaceButton.onClick.RemoveListener(InterfaceButtonClicked);
+    }
 
     public void UpdateProductInterface(Product productData)
     {
@@ -13,15 +33,15 @@ public class ProductInterface : MonoBehaviour
         t_ProductPrice.text = $"${productData.price}";
         t_ProductDescription.text = productData.description;
     }
-    public void SetNameAndPrice(string name, string price)
-    {
-        t_ProductName.text = name;
-        t_ProductPrice.text = price;
-    }
 
     public override string ToString()
     {
         return $"Name: {t_ProductName.text}, Price: {t_ProductPrice.text}, Description: {t_ProductDescription.text}";
+    }
+
+    private void InterfaceButtonClicked()
+    {
+        OnAnyProductButtonPressed?.Invoke($"{t_ProductName.text}, {t_ProductPrice.text}");
     }
 
 }

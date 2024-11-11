@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 /// <summary>
 /// Manages product visuals
 /// </summary>
 public class Shelf : MonoBehaviour
 {
+    public static Action<ProductList> OnShelfUpdated;
+
     /// <summary>
     /// World Positions for products on the shelf
     /// </summary>
@@ -15,7 +18,11 @@ public class Shelf : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.OnDataParsed += GameManager_OnDataParsed;
+        ReadData.OnDataRecievedFromURL += ReadData_OnDataRecievedFromURL;
+    }
+    private void OnDisable()
+    {
+        ReadData.OnDataRecievedFromURL -= ReadData_OnDataRecievedFromURL;
     }
 
     public static List<ProductData> GetCurrentActiveProducts() { return activeProductList; }
@@ -50,15 +57,22 @@ public class Shelf : MonoBehaviour
         toRemoveList.Clear();
     }
 
-    private void GameManager_OnDataParsed(ProductList newProductList)
+    private void ReadData_OnDataRecievedFromURL(string uRLText)
     {
+        ProductList recievedProductList = JsonHelper.CreateProductsFromJSON(uRLText);//prasing JSoon
+
+        int productsCount = recievedProductList.products.Length;
+        if (productsCount <= 0) { Debug.LogError("No products recieved"); return; }
+
         ClearShelfProducts();
 
-        for (int i = 0; i < newProductList.products.Length; i++)
+        for (int i = 0; i < recievedProductList.products.Length; i++)
         {
-            Product product = newProductList.products[i];
+            Product product = recievedProductList.products[i];
             AddProductToShelf(product);
         }
+
+        OnShelfUpdated?.Invoke(recievedProductList);
     }
 
 }

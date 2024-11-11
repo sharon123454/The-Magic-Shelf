@@ -8,7 +8,9 @@ public class ShelfInterface : MonoBehaviour
     [SerializeField] private Transform container;
 
     private List<ProductData> activeProductList = new List<ProductData>();
-    private List<ProductInterface> productInterfaceList = new List<ProductInterface>();
+    private static List<ProductInterface> productInterfaceList = new List<ProductInterface>();
+
+    public static List<ProductInterface> GetProductInterfaceList() {  return productInterfaceList; }
 
     public void AddProductsToInterface(List<ProductData> products)
     {
@@ -29,8 +31,9 @@ public class ShelfInterface : MonoBehaviour
     }
     public void ClearInterface()
     {
-        List<ProductData> toRemoveList = new List<ProductData>();//Clearing cached GameObjects and returning to pool
-        List<ProductInterface> removeList = new List<ProductInterface>();//Clearing cached Interfaces and returning to pool
+        //Clearing cached Data and returning to pool
+        List<ProductData> toRemoveList = new List<ProductData>();
+        List<ProductInterface> removeList = new List<ProductInterface>();
 
         foreach (ProductData product in activeProductList)
         {
